@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Relativity Module — Sci 315 Modern Physics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#132C56; --gold:#B8912F; --flame:#E2701F;
+    --bg:#F7F0E3; --surface:#FFFCF6; --text:#132C56; --muted:#5C6B84; --rule:#DCCFB6;
+    --shadow:0 1px 0 rgba(19,44,86,.10);
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0D1B30; --surface:#142644; --text:#F4EADB; --muted:#A9B8CE; --rule:#27405F; --shadow:none;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D1B30; --surface:#142644; --text:#F4EADB; --muted:#A9B8CE; --rule:#27405F; --shadow:none;
+  }
+  *,*::before,*::after{box-sizing:inherit}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:"Source Serif 4",Cambria,Georgia,serif;font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:28px 20px 64px}
+  .sans{font-family:Montserrat,Calibri,system-ui,sans-serif}
+  header{padding-bottom:18px;border-bottom:2px solid var(--gold);margin-bottom:28px}
+  .kicker{font-family:Montserrat,sans-serif;font-size:13.5px;font-weight:600;color:var(--gold);letter-spacing:.04em;text-transform:uppercase;margin:0 0 6px}
+  h1{font-family:Montserrat,Calibri,system-ui,sans-serif;font-weight:700;font-size:clamp(30px,5vw,44px);letter-spacing:-.02em;line-height:1.05;margin:0 0 10px}
+  header p{margin:0;color:var(--muted);max-width:60ch}
+  h2{font-family:Montserrat,sans-serif;font-weight:700;font-size:21px;margin:38px 0 10px}
+  h3{font-family:Montserrat,sans-serif;font-weight:600;font-size:16px;margin:20px 0 6px}
+  .card{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:20px 22px;box-shadow:var(--shadow);margin:14px 0}
+  ol,ul{padding-left:1.3em;margin:8px 0}
+  li{margin:4px 0}
+  .lesson-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 16px}
+  .lesson-head h2{margin:0}
+  .num{font-family:Montserrat,sans-serif;font-weight:700;color:var(--flame);font-size:14px;letter-spacing:.05em}
+  .btn{display:inline-block;font-family:Montserrat,sans-serif;font-weight:600;font-size:15px;
+    background:var(--navy);color:#F4EADB;text-decoration:none;padding:10px 18px;border-radius:8px;margin:10px 0 4px}
+  :root[data-theme="dark"] .btn{background:var(--gold);color:#0D1B30}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn{background:var(--gold);color:#0D1B30}}
+  .btn:hover{opacity:.9}
+  details{border-top:1px solid var(--rule);padding:10px 0}
+  details:last-of-type{border-bottom:1px solid var(--rule)}
+  summary{cursor:pointer;font-weight:600}
+  details .ans{margin:8px 0 2px;padding:10px 14px;border-left:3px solid var(--gold);background:color-mix(in srgb, var(--gold) 8%, transparent)}
+  .done{display:flex;align-items:center;gap:10px;font-family:Montserrat,sans-serif;font-size:14px;font-weight:600;color:var(--muted);margin-top:14px;cursor:pointer}
+  .done input{width:18px;height:18px;accent-color:var(--gold)}
+  .progress{font-family:Montserrat,sans-serif;font-size:14px;font-weight:600;color:var(--muted);margin-top:14px}
+  .bar{height:8px;background:var(--rule);border-radius:99px;overflow:hidden;margin-top:6px;max-width:320px}
+  .bar div{height:100%;width:0;background:var(--gold);transition:width .3s}
+  .eq{font-style:italic;white-space:nowrap}
+  footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);color:var(--muted);font-size:14px}
+  a{color:inherit}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="kicker">Sci 315 · Modern Physics · Special Relativity</p>
+  <h1>When motion changes time and space</h1>
+  <p>An online learning module with three interactive simulations. Work through the lessons in order; each one builds on the last.</p>
+  <div class="progress">Your progress: <span id="count">0</span> of 3 lessons done
+    <div class="bar"><div id="fill"></div></div>
+  </div>
+</header>
+
+<section class="card">
+  <h3 style="margin-top:0">Learning outcomes</h3>
+  <p style="margin:0 0 6px">By the end of this module, you should be able to:</p>
+  <ol>
+    <li>Explain why observers in relative motion disagree about time intervals and lengths.</li>
+    <li>Identify proper time and proper length in a given situation.</li>
+    <li>Calculate the Lorentz factor <span class="eq">γ = 1/√(1 − v²/c²)</span> and use it to find dilated times and contracted lengths.</li>
+    <li>Resolve the twin paradox by identifying what makes the two twins' situations different.</li>
+  </ol>
+  <h3>How to use this module</h3>
+  <ul>
+    <li>Answer the <strong>Predict</strong> question in your notebook <em>before</em> opening the simulation.</li>
+    <li>Open the simulation, do the <strong>Explore</strong> tasks, then return here using the link at the top of the page.</li>
+    <li>Try the <strong>Check your understanding</strong> items on your own before revealing the answers.</li>
+  </ul>
+</section>
+
+<!-- LESSON 1 -->
+<section class="card" id="lesson1">
+  <div class="lesson-head"><h2>Time dilation</h2><span class="num">LESSON 1</span></div>
+  <h3>Predict</h3>
+  <p>A light clock ticks once per second for an astronaut in a moving rocket. Will someone on the ground count more, fewer, or the same number of seconds for one of those ticks? Why?</p>
+  <a class="btn" href="time-dilation.html">Open the simulation &rarr;</a>
+  <h3>Explore</h3>
+  <ol>
+    <li>Set the speed to 0.6c. Compare the path of the light pulse in the ground frame and in the rocket frame. Which path is longer?</li>
+    <li>Record γ at 0.3c, 0.6c, 0.8c and 0.95c. Describe how γ behaves as v approaches c.</li>
+    <li>Follow the section on where the formula comes from, and write the derivation in your own words.</li>
+  </ol>
+  <h3>Check your understanding</h3>
+  <details><summary>1. At v = 0.6c, how much ground time passes for one 1-second tick of the rocket clock?</summary>
+    <div class="ans">γ = 1/√(1 − 0.36) = 1/0.8 = 1.25, so Δt = γΔt₀ = 1.25 s.</div></details>
+  <details><summary>2. In this setup, which observer measures the proper time? Why?</summary>
+    <div class="ans">The astronaut. Proper time is measured by a clock at rest relative to both events, and both the emission and return of the light pulse happen at the same place in the rocket.</div></details>
+  <details><summary>3. Muons have a lifetime of about 2.2 μs at rest. At v = 0.995c, how long do they last as seen from Earth?</summary>
+    <div class="ans">γ = 1/√(1 − 0.995²) ≈ 10.0, so about 22 μs. This is why muons made in the upper atmosphere survive long enough to reach the ground.</div></details>
+  <label class="done"><input type="checkbox" data-lesson="1"> I've finished this lesson</label>
+</section>
+
+<!-- LESSON 2 -->
+<section class="card" id="lesson2">
+  <div class="lesson-head"><h2>Length contraction</h2><span class="num">LESSON 2</span></div>
+  <h3>Predict</h3>
+  <p>If moving clocks run slow, what do you think happens to the length of a moving rocket as measured from the ground? Does its height change too?</p>
+  <a class="btn" href="length-contraction.html">Open the simulation &rarr;</a>
+  <h3>Explore</h3>
+  <ol>
+    <li>Increase the speed step by step and watch the rocket in the ground frame. Which dimension changes, and which stays the same?</li>
+    <li>Switch to the rocket frame. What does the astronaut measure for the rocket's own length?</li>
+    <li>Use the graph to find the speed at which the rocket appears half its rest length.</li>
+  </ol>
+  <h3>Check your understanding</h3>
+  <details><summary>1. A rocket is 40 m long at rest. How long is it measured from the ground at 0.8c? Check your answer with the simulation.</summary>
+    <div class="ans">γ = 1/√(1 − 0.64) = 1/0.6 ≈ 1.667, so L = L₀/γ = 40 × 0.6 = 24 m.</div></details>
+  <details><summary>2. Who measures the proper length of the rocket?</summary>
+    <div class="ans">The astronaut, or anyone at rest relative to the rocket. Proper length is always the longest length any observer measures.</div></details>
+  <details><summary>3. At what speed is the rocket measured at half its rest length?</summary>
+    <div class="ans">When γ = 2: 1 − v²/c² = 1/4, so v = (√3/2)c ≈ 0.866c.</div></details>
+  <label class="done"><input type="checkbox" data-lesson="2"> I've finished this lesson</label>
+</section>
+
+<!-- LESSON 3 -->
+<section class="card" id="lesson3">
+  <div class="lesson-head"><h2>The twin paradox</h2><span class="num">LESSON 3</span></div>
+  <h3>Predict</h3>
+  <p>One twin travels to a distant star and back at high speed. Each twin sees the other's clock running slow during the trip. So who is younger at the reunion, or are they the same age?</p>
+  <a class="btn" href="twin-paradox.html">Open the simulation &rarr;</a>
+  <h3>Explore</h3>
+  <ol>
+    <li>Run the journey and watch both clocks. Note each twin's age at the reunion.</li>
+    <li>Study the spacetime map. Which twin's worldline is straight, and which one bends? What does the bend represent physically?</li>
+    <li>Read what each twin actually sees during the trip, and note when each twin sees the other's flashes switch from arriving slowly to arriving quickly.</li>
+  </ol>
+  <h3>Check your understanding</h3>
+  <details><summary>1. A star is 4 light-years away. The traveller goes there and back at 0.8c. How much does each twin age? Check your answer with the simulation.</summary>
+    <div class="ans">Earth twin: 8 ly ÷ 0.8c = 10 years. Traveller: 10 ÷ γ = 10 × 0.6 = 6 years. The traveller is 4 years younger.</div></details>
+  <details><summary>2. Why isn't the situation symmetric, even though each twin sees the other moving?</summary>
+    <div class="ans">Only the travelling twin changes inertial frames at the turnaround (and feels the acceleration). The Earth twin stays in one inertial frame the whole time, so the two worldlines are not equivalent.</div></details>
+  <label class="done"><input type="checkbox" data-lesson="3"> I've finished this lesson</label>
+</section>
+
+<section class="card">
+  <h3 style="margin-top:0">Wrap-up reflection</h3>
+  <p style="margin:0">In a short paragraph, explain to a Grade 12 student why "time is relative" does not mean "anything goes." Mention proper time, the Lorentz factor, and what all observers <em>do</em> agree on (the speed of light).</p>
+</section>
+
+<footer>Sci 315 Modern Physics · Catanduanes State University · Simulations best viewed on a laptop or tablet.</footer>
+</div>
+
+<script>
+  const boxes=[...document.querySelectorAll('input[data-lesson]')];
+  function load(){try{return JSON.parse(localStorage.getItem('sci315-rel-progress')||'{}')}catch(e){return {}}}
+  function save(p){try{localStorage.setItem('sci315-rel-progress',JSON.stringify(p))}catch(e){}}
+  function update(){
+    const n=boxes.filter(b=>b.checked).length;
+    document.getElementById('count').textContent=n;
+    document.getElementById('fill').style.width=(n/boxes.length*100)+'%';
+  }
+  const p=load();
+  boxes.forEach(b=>{
+    b.checked=!!p[b.dataset.lesson];
+    b.addEventListener('change',()=>{const q=load();q[b.dataset.lesson]=b.checked;save(q);update();});
+  });
+  update();
+</script>
+</body>
+</html>

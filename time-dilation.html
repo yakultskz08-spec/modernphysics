@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Time dilation — Sci 315 Modern Physics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#132C56;
+    --navy-2:#15385C;
+    --gold:#B8912F;
+    --flame:#E2701F;
+    --paper:#F4EADB;
+
+    --bg:#F7F0E3;
+    --surface:#FFFCF6;
+    --text:#132C56;
+    --muted:#5C6B84;
+    --rule:#DCCFB6;
+    --shadow:0 1px 0 rgba(19,44,86,.10);
+
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0D1B30;
+      --surface:#142644;
+      --text:#F4EADB;
+      --muted:#A9B8CE;
+      --rule:#27405F;
+      --shadow:none;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D1B30;
+    --surface:#142644;
+    --text:#F4EADB;
+    --muted:#A9B8CE;
+    --rule:#27405F;
+    --shadow:none;
+  }
+
+  *,*::before,*::after{box-sizing:inherit}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:"Source Serif 4",Cambria,Georgia,serif;
+    font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 20px 64px}
+
+  header{
+    display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 28px;
+    padding-bottom:18px;border-bottom:2px solid var(--gold);margin-bottom:26px;
+  }
+  h1{
+    font-family:Montserrat,Calibri,system-ui,sans-serif;
+    font-weight:700;font-size:clamp(30px,5vw,44px);
+    letter-spacing:-.02em;line-height:1.05;margin:0 0 6px;
+  }
+  header p{margin:0;max-width:52ch;color:var(--muted);font-size:17px}
+  .course{
+    margin-left:auto;text-align:right;font-family:Montserrat,sans-serif;
+    font-size:13.5px;font-weight:600;line-height:1.45;color:var(--muted);
+  }
+  .course span{display:block;color:var(--gold)}
+
+  h2{font-family:Montserrat,sans-serif;font-weight:600;font-size:15px;margin:0 0 4px}
+  .sub{margin:0 0 14px;color:var(--muted);font-size:15px;font-style:italic}
+
+  .bench{background:var(--navy);border-radius:14px;padding:18px 18px 8px;
+    box-shadow:0 10px 30px rgba(19,44,86,.18)}
+  .frame + .frame{margin-top:6px;border-top:1px solid rgba(244,234,219,.18);padding-top:14px}
+  .frame-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:2px;color:var(--paper)}
+  .frame-head h3{font-family:Montserrat,sans-serif;font-weight:600;font-size:15px;margin:0}
+  .frame-head em{font-size:14.5px;color:#C8B79C;font-style:italic}
+  svg.stage{display:block;width:100%;height:auto}
+  .stage-note{margin:0 0 10px;color:#9FB0C9;font-size:13px;font-family:Montserrat,sans-serif}
+
+  .controls{margin-top:18px;background:var(--surface);border:1px solid var(--rule);
+    border-radius:12px;padding:18px 18px 16px;box-shadow:var(--shadow)}
+  .ctl{margin-bottom:16px}
+  .ctl:last-of-type{margin-bottom:0}
+  .ctl label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+    font-family:Montserrat,sans-serif;font-weight:600;font-size:14px;margin-bottom:6px}
+  .ctl label b{font-weight:700;color:var(--flame);font-variant-numeric:tabular-nums;font-size:16px}
+  input[type=range]{width:100%;accent-color:var(--flame);height:26px;margin:0;cursor:pointer}
+  input[type=range]:focus-visible{outline:3px solid var(--gold);outline-offset:4px;border-radius:4px}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px}
+  button{font-family:Montserrat,sans-serif;font-weight:600;font-size:14px;
+    padding:9px 16px;border-radius:999px;cursor:pointer;
+    border:1.5px solid var(--navy);background:var(--navy);color:var(--paper)}
+  button.ghost{background:transparent;color:var(--text);border-color:var(--rule)}
+  button.ghost:hover{border-color:var(--gold)}
+  button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+  .presets{margin-left:auto;display:flex;flex-wrap:wrap;gap:8px}
+  .presets button{padding:7px 13px;font-size:13.5px;font-variant-numeric:tabular-nums}
+  .presets button[aria-pressed="true"]{background:var(--flame);border-color:var(--flame);color:#fff}
+
+  .panels{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;margin-top:18px}
+  .card{background:var(--surface);border:1px solid var(--rule);border-radius:12px;
+    padding:18px;box-shadow:var(--shadow)}
+  dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:7px 18px;align-items:baseline}
+  dt{font-family:Montserrat,sans-serif;font-size:13.5px;font-weight:600;color:var(--muted)}
+  dd{margin:0;text-align:right;font-family:Montserrat,sans-serif;font-weight:600;
+     font-size:17px;font-variant-numeric:tabular-nums}
+  dd.hi{color:var(--flame)}
+  .math{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);font-size:16.5px;line-height:1.9}
+  .math code{font-family:Montserrat,sans-serif;font-weight:600;font-size:16px;
+    font-variant-numeric:tabular-nums;color:var(--text)}
+  .math span{color:var(--muted);font-style:italic;font-size:15px}
+  .curve{display:block;width:100%;height:auto;margin-top:2px}
+
+  .notes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px}
+  .note{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--gold);
+    border-radius:10px;padding:16px 18px;box-shadow:var(--shadow)}
+  .note.alert{border-left-color:var(--flame)}
+  .note.teach{border-left-color:var(--navy-2)}
+  .note h4{font-family:Montserrat,sans-serif;font-size:14px;font-weight:700;margin:0 0 6px}
+  .note p{margin:0;font-size:15.5px;line-height:1.6}
+  .note p + p{margin-top:9px}
+
+  footer{margin-top:28px;color:var(--muted);font-size:14px;font-style:italic}
+
+  @media (max-width:820px){
+    .panels,.notes{grid-template-columns:1fr}
+    .presets{margin-left:0;width:100%}
+    .wrap{padding:22px 16px 52px}
+    .course{margin-left:0;text-align:left}
+  }
+  @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+<nav style="max-width:1080px;margin:0 auto;padding:14px 20px 0;font-family:Montserrat,Calibri,system-ui,sans-serif;font-size:14px;font-weight:600;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
+<a href="index.html" style="color:var(--gold);text-decoration:none">&larr; Module home</a>
+<a href="index.html#lesson1" style="color:var(--muted);text-decoration:none">Back to the questions for this lesson</a>
+</nav>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>Time dilation</h1>
+      <p>Two identical light clocks. One stays home, one rides the rocket. Watch the tick counters drift apart.</p>
+    </div>
+    <div class="course">Sci 315 Modern Physics<span>Unit I: Relativity</span></div>
+  </header>
+
+  <section class="bench" aria-label="Simulation">
+
+    <div class="frame">
+      <div class="frame-head">
+        <h3>Ground frame</h3>
+        <em>your clock on the left, the rocket's clock flying past</em>
+      </div>
+      <svg class="stage" id="labSvg" viewBox="0 0 1000 300" role="img"
+           aria-label="Two light clocks in the ground frame. The stationary clock's pulse bounces straight up and down; the moving clock's pulse traces a zigzag over a longer path, so it ticks less often.">
+        <g id="labTrail"></g>
+        <g id="labClocks"></g>
+        <g id="labAnno"></g>
+      </svg>
+      <p class="stage-note">The pulse in the moving clock has farther to travel, but light cannot travel any faster. Something has to give, and it is the time between ticks.</p>
+    </div>
+
+    <div class="frame">
+      <div class="frame-head">
+        <h3>Rocket frame</h3>
+        <em>the crew's clock is the still one now</em>
+      </div>
+      <svg class="stage" id="shipSvg" viewBox="0 0 1000 300" role="img"
+           aria-label="The same pair of clocks seen from the rocket. Now the rocket's clock pulse goes straight up and down and the ground clock traces the zigzag.">
+        <g id="shipTrail"></g>
+        <g id="shipClocks"></g>
+        <g id="shipAnno"></g>
+      </svg>
+      <p class="stage-note">Nothing aboard has changed. The crew's pulse still goes straight up and down, and now it is the ground clock that falls behind.</p>
+    </div>
+
+  </section>
+
+  <section class="controls" aria-label="Controls">
+    <div class="ctl">
+      <label for="beta">Speed of the rocket <b id="betaOut">0.60c</b></label>
+      <input type="range" id="beta" min="0" max="0.99" step="0.002" value="0.6" aria-describedby="betaOut">
+    </div>
+    <div class="ctl">
+      <label for="tick">One tick on the rocket clock <b id="tickOut">1.00 µs</b></label>
+      <input type="range" id="tick" min="0.5" max="1.5" step="0.25" value="1" aria-describedby="tickOut">
+    </div>
+    <div class="row">
+      <button id="play">Pause</button>
+      <button id="reset" class="ghost">Reset the counters</button>
+      <div class="presets" role="group" aria-label="Speed presets">
+        <button class="ghost" data-b="0.6">0.60c</button>
+        <button class="ghost" data-b="0.8">0.80c</button>
+        <button class="ghost" data-b="0.866">0.866c</button>
+        <button class="ghost" data-b="0.99">0.99c</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="panels">
+    <div class="card">
+      <h2>Where the formula comes from</h2>
+      <p class="sub">Pythagoras on the light path — nothing heavier than a square root.</p>
+      <dl>
+        <dt>Speed v</dt><dd id="vOut">1.80 × 10⁸ m/s</dd>
+        <dt>v as a fraction of c</dt><dd id="bOut">0.600</dd>
+        <dt>Lorentz factor γ</dt><dd id="gOut">1.250</dd>
+        <dt>Mirror separation h</dt><dd id="hOut">150 m</dd>
+        <dt>One tick for the crew Δt₀</dt><dd id="t0Out">1.00 µs</dd>
+        <dt>Same tick from the ground Δt</dt><dd class="hi" id="tOut">1.25 µs</dd>
+      </dl>
+      <div class="math">
+        <code>(c × Δt)² = h² + (v × Δt)²</code>
+        <span id="eqA">for half a tick — one trip from mirror to mirror</span><br>
+        <code id="eqB">light path 187.5 m, height 150.0 m, rocket moves 112.5 m</code><br>
+        <code id="eqC">√(150.0² + 112.5²) = 187.5 m ✓</code><br>
+        <span id="eqD">so Δt = γ × Δt₀ = 1.250 × 1.00 = 1.25 µs per tick</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>How γ climbs with speed</h2>
+      <p class="sub">Barely above 1 for anything you can drive, then it runs away.</p>
+      <svg class="curve" id="curve" viewBox="0 0 320 210" role="img"
+           aria-label="Graph of the Lorentz factor against speed. It sits near 1 until about 0.6c, then rises steeply toward infinity at c.">
+        <g id="curveG"></g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note">
+      <h4>Not a quirk of light clocks</h4>
+      <p>The light clock is a thinking tool, not a special device. Atomic clocks, chemical reactions, decaying particles, and heartbeats all run slow by the same factor γ.</p>
+      <p>If they did not, the crew could compare two clocks aboard and work out their own absolute speed — and that is exactly what Einstein's first postulate forbids.</p>
+    </div>
+    <div class="note alert">
+      <h4>Misconception alert</h4>
+      <p>The crew never feels time crawl. One second aboard feels like one second, and their clock keeps perfect time against everything else on the rocket.</p>
+      <p>"Moving clocks run slow" is always shorthand for <em>slow as measured from the other frame</em>. Drop that ending and the sentence stops being true.</p>
+    </div>
+    <div class="note teach">
+      <h4>For your future classroom</h4>
+      <p>Both panels are correct, and students will notice. Each frame measures the other's clock as the slow one, because "at the same time" means something different in each. Park the argument here and pick it up in the twin paradox.</p>
+      <p>Then bring in muons: they live about 2.2 µs and should cover only 660 m, yet they reach sea level from 15 km up. At γ = 20 that is roughly 13 km of room.</p>
+    </div>
+  </div>
+
+  <footer>Motion is slowed far below scale so it can be watched. Taking c = 3.00 × 10⁸ m/s, which is 300 m per microsecond.</footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var C_MS = 3.00e8;
+  var C = 300;           // metres per microsecond
+  var PXPM = 0.55;       // svg units per metre, same in both directions so the triangle is true
+  var RATE = 1.6;        // microseconds of ground time per real second
+  var Y_BASE = 240;      // bottom mirror
+  var GROUND_X = 130;    // the stationary clock in the ground frame
+
+  var PAPER = "#F4EADB", GOLD = "#B8912F", FLAME = "#E2701F", DIM = "#7E90AC", MINT = "#8FD6C4";
+
+  var beta = 0.6, dt0 = 1.0, playing = true;
+  var T = 0, xA = -40, xB = 1040, last = 0;
+
+  var $ = function(id){ return document.getElementById(id); };
+  var svgns = "http://www.w3.org/2000/svg";
+  function el(n, a){ var e = document.createElementNS(svgns, n); for (var k in a) e.setAttribute(k, a[k]); return e; }
+  function clear(n){ while(n.firstChild) n.removeChild(n.firstChild); }
+  function gamma(){ return 1 / Math.sqrt(1 - beta*beta); }
+  function height(){ return C * dt0 / 2; }                 // metres between mirrors
+  function Hpx(){ return height() * PXPM; }
+  function txt(a, o){
+    var label = o.t, copy = {};
+    for (var k in o){ if (k !== "t") copy[k] = o[k]; }
+    var t = el("text", copy); t.textContent = label; a.appendChild(t); return t;
+  }
+
+  /* ---------- one clock: two mirrors, a pulse, a label, a counter ---------- */
+  function drawClock(host, x, properTime, label, colour, counterLabel){
+    var H = Hpx(), yTop = Y_BASE - H;
+    host.appendChild(el("line", {x1:x, y1:yTop, x2:x, y2:Y_BASE,
+      stroke:PAPER, "stroke-width":1, opacity:.22, "stroke-dasharray":"3 5"}));
+    [yTop, Y_BASE].forEach(function(y){
+      host.appendChild(el("rect", {x:x-17, y:y-3, width:34, height:6, rx:2, fill:colour, opacity:.95}));
+    });
+
+    var half = dt0 / 2;
+    var n = Math.floor(properTime / half);
+    var frac = (properTime / half) - n;
+    var up = (n % 2 === 0);
+    var py = up ? (Y_BASE - H*frac) : (yTop + H*frac);
+    host.appendChild(el("circle", {cx:x, cy:py, r:6, fill:"#FFF3D6"}));
+    host.appendChild(el("circle", {cx:x, cy:py, r:11, fill:"#FFF3D6", opacity:.22}));
+
+    txt(host, {x:x, y:yTop - 16, fill:colour, "font-size":"14", "font-weight":"700",
+      "font-family":"Montserrat, sans-serif", "text-anchor":"middle", t:label});
+    txt(host, {x:x, y:Y_BASE + 32, fill:PAPER, "font-size":"19", "font-weight":"700",
+      "font-family":"Montserrat, sans-serif", "text-anchor":"middle",
+      t:Math.floor(properTime / dt0) + " ticks"});
+    txt(host, {x:x, y:Y_BASE + 52, fill:DIM, "font-size":"12.5",
+      "font-family":"Montserrat, sans-serif", "text-anchor":"middle", t:counterLabel});
+    return {yTop:yTop, py:py, frac:frac, up:up};
+  }
+
+  /* ---------- zigzag trail plus the live right triangle ---------- */
+  function drawZigzag(host, x, st, D, withTriangle){
+    var H = Hpx(), x0 = x - D * st.frac, y0 = st.up ? Y_BASE : st.yTop;
+    host.appendChild(el("line", {x1:x0, y1:y0, x2:x, y2:st.py,
+      stroke:GOLD, "stroke-width":2.5, "stroke-linecap":"round"}));
+
+    var px = x0, py0 = y0, up = st.up;
+    for (var k = 0; k < 5; k++){
+      var nx = px - D, ny = up ? st.yTop : Y_BASE;
+      if (nx < -60) break;
+      host.appendChild(el("line", {x1:px, y1:py0, x2:nx, y2:ny,
+        stroke:GOLD, "stroke-width":2, opacity: 0.30 - k*0.05}));
+      px = nx; py0 = ny; up = !up;
+    }
+
+    if (!withTriangle || st.frac < 0.22 || D < 14) return;
+    host.appendChild(el("line", {x1:x0, y1:y0, x2:x0, y2:st.py,
+      stroke:PAPER, "stroke-width":1.5, "stroke-dasharray":"5 4", opacity:.65}));
+    host.appendChild(el("line", {x1:x0, y1:st.py, x2:x, y2:st.py,
+      stroke:PAPER, "stroke-width":1.5, "stroke-dasharray":"5 4", opacity:.65}));
+    txt(host, {x:(x0+x)/2, y:st.py + (st.up ? 18 : -9), fill:DIM, "font-size":"12",
+      "font-family":"Montserrat, sans-serif", "text-anchor":"middle", t:"rocket moves"});
+    txt(host, {x:x0 - 7, y:(y0 + st.py)/2, fill:DIM, "font-size":"12",
+      "font-family":"Montserrat, sans-serif", "text-anchor":"end", t:"height"});
+    txt(host, {x:(x0+x)/2 + 14, y:(y0 + st.py)/2 - 6, fill:GOLD, "font-size":"12.5",
+      "font-weight":"600", "font-family":"Montserrat, sans-serif", t:"light path"});
+  }
+
+  /* ---------- the two panels ---------- */
+  function paint(){
+    var g = gamma(), tau = T / g;
+    var D = beta * C * (dt0/2) * g * PXPM;      // rocket travel per half tick, ground frame
+
+    // ground frame
+    var tr = $("labTrail"), ck = $("labClocks"), an = $("labAnno");
+    clear(tr); clear(ck); clear(an);
+    an.appendChild(el("line", {x1:0, y1:Y_BASE+8, x2:1000, y2:Y_BASE+8,
+      stroke:PAPER, "stroke-width":1.5, opacity:.35}));
+    var sGround = drawClock(ck, GROUND_X, T, "your clock", MINT, "sitting still");
+    tr.appendChild(el("line", {x1:GROUND_X, y1:sGround.up ? Y_BASE : sGround.yTop,
+      x2:GROUND_X, y2:sGround.py, stroke:MINT, "stroke-width":2.5, "stroke-linecap":"round"}));
+    var sMove = drawClock(ck, xA, tau, "rocket clock", FLAME, "running slow by \u03B3");
+    drawZigzag(tr, xA, sMove, D, true);
+
+    // rocket frame
+    var tr2 = $("shipTrail"), ck2 = $("shipClocks"), an2 = $("shipAnno");
+    clear(tr2); clear(ck2); clear(an2);
+    an2.appendChild(el("line", {x1:0, y1:Y_BASE+8, x2:1000, y2:Y_BASE+8,
+      stroke:PAPER, "stroke-width":1.5, opacity:.35}));
+    var sCrew = drawClock(ck2, 500, tau, "rocket clock", FLAME, "sitting still");
+    tr2.appendChild(el("line", {x1:500, y1:sCrew.up ? Y_BASE : sCrew.yTop,
+      x2:500, y2:sCrew.py, stroke:FLAME, "stroke-width":2.5, "stroke-linecap":"round"}));
+    var D2 = beta * C * (dt0/2) * g * PXPM;
+    var sGrd2 = drawClock(ck2, xB, tau / g, "your clock", MINT, "running slow by \u03B3");
+    drawZigzag(tr2, xB, sGrd2, -D2, false);
+    txt(an2, {x:990, y:Y_BASE + 32, fill:DIM, "font-size":"13",
+      "font-family":"Montserrat, sans-serif", "text-anchor":"end", t:"ground sweeps past \u2190"});
+  }
+
+  /* ---------- gamma curve ---------- */
+  function drawCurve(){
+    var g = $("curveG"); clear(g);
+    var x0 = 46, x1 = 300, y0 = 22, y1 = 160, TOP = 8;
+    var X = function(b){ return x0 + b * (x1 - x0); };
+    var Yv = function(v){ return y1 - (Math.min(v, TOP) - 1) / (TOP - 1) * (y1 - y0); };
+
+    [1, 4, 7].forEach(function(v){
+      g.appendChild(el("line", {x1:x0, y1:Yv(v), x2:x1, y2:Yv(v),
+        stroke:"currentColor", opacity:.16, "stroke-width":1}));
+      txt(g, {x:x0 - 9, y:Yv(v) + 4, fill:"currentColor", opacity:.6, "font-size":"11.5",
+        "font-family":"Montserrat, sans-serif", "text-anchor":"end", t:v.toFixed(0)});
+    });
+    [0, 0.5, 1].forEach(function(b){
+      txt(g, {x:X(b), y:y1 + 20, fill:"currentColor", opacity:.6, "font-size":"11.5",
+        "font-family":"Montserrat, sans-serif", "text-anchor":"middle", t: b === 1 ? "c" : (b + "c")});
+    });
+
+    var pts = [];
+    for (var i = 0; i <= 240; i++){
+      var b = i / 240 * 0.9925, v = 1/Math.sqrt(1 - b*b);
+      if (v > TOP) break;
+      pts.push((i ? "L" : "M") + X(b).toFixed(2) + "," + Yv(v).toFixed(2));
+    }
+    g.appendChild(el("path", {d:pts.join(" "), fill:"none", stroke:GOLD, "stroke-width":2.5}));
+
+    var gv = gamma();
+    g.appendChild(el("line", {x1:X(beta), y1:Yv(gv), x2:X(beta), y2:y1,
+      stroke:FLAME, "stroke-width":1.5, "stroke-dasharray":"4 4", opacity:.8}));
+    g.appendChild(el("circle", {cx:X(beta), cy:Yv(gv), r:6, fill:FLAME}));
+    txt(g, {x: X(beta) > 200 ? X(beta) - 12 : X(beta) + 12, y: Yv(gv) - 12, fill:FLAME,
+      "font-size":"13.5", "font-family":"Montserrat, sans-serif", "font-weight":"700",
+      "text-anchor": X(beta) > 200 ? "end" : "start", t:"\u03B3 = " + gv.toFixed(2)});
+    txt(g, {x:8, y:14, fill:"currentColor", opacity:.65, "font-size":"12",
+      "font-family":"Montserrat, sans-serif", t:"\u03B3"});
+  }
+
+  /* ---------- numbers ---------- */
+  function updateNumbers(){
+    var g = gamma(), h = height(), halfG = g * dt0 / 2;
+    var path = C * halfG, moved = beta * C * halfG;
+
+    $("betaOut").textContent = beta.toFixed(3).replace(/0$/,"") + "c";
+    $("tickOut").textContent = dt0.toFixed(2) + " \u00B5s";
+    $("vOut").textContent = beta === 0 ? "0 m/s" : (beta * C_MS / 1e8).toFixed(2) + " \u00D7 10\u2078 m/s";
+    $("bOut").textContent = beta.toFixed(3);
+    $("gOut").textContent = g.toFixed(3);
+    $("hOut").textContent = h.toFixed(1) + " m";
+    $("t0Out").textContent = dt0.toFixed(2) + " \u00B5s";
+    $("tOut").textContent = (g * dt0).toFixed(2) + " \u00B5s";
+
+    $("eqB").textContent = "light path " + path.toFixed(1) + " m, height " + h.toFixed(1) +
+      " m, rocket moves " + moved.toFixed(1) + " m";
+    $("eqC").textContent = "\u221A(" + h.toFixed(1) + "\u00B2 + " + moved.toFixed(1) + "\u00B2) = " +
+      Math.sqrt(h*h + moved*moved).toFixed(1) + " m \u2713";
+    $("eqD").textContent = "so \u0394t = \u03B3 \u00D7 \u0394t\u2080 = " + g.toFixed(3) + " \u00D7 " +
+      dt0.toFixed(2) + " = " + (g * dt0).toFixed(2) + " \u00B5s per tick";
+
+    document.querySelectorAll(".presets button").forEach(function(b){
+      b.setAttribute("aria-pressed", Math.abs(parseFloat(b.dataset.b) - beta) < 0.002 ? "true" : "false");
+    });
+  }
+
+  function redraw(){ paint(); drawCurve(); updateNumbers(); }
+
+  /* ---------- loop ---------- */
+  function tick(now){
+    if (!last) last = now;
+    var dt = Math.min((now - last)/1000, 0.05);
+    last = now;
+    if (playing){
+      var g = gamma(), step = beta * C * PXPM * RATE * dt;
+      T += RATE * dt;
+      xA += step;              if (xA > 1045) xA = -45;
+      xB -= step / g;          if (xB < -45)  xB = 1045;
+      paint();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* ---------- wiring ---------- */
+  $("beta").addEventListener("input", function(e){ beta = parseFloat(e.target.value); redraw(); });
+  $("tick").addEventListener("input", function(e){ dt0 = parseFloat(e.target.value); redraw(); });
+  $("play").addEventListener("click", function(){
+    playing = !playing; this.textContent = playing ? "Pause" : "Play";
+  });
+  $("reset").addEventListener("click", function(){ T = 0; xA = -45; xB = 1045; redraw(); });
+  document.querySelectorAll(".presets button").forEach(function(b){
+    b.addEventListener("click", function(){
+      beta = parseFloat(this.dataset.b); $("beta").value = beta; redraw();
+    });
+  });
+
+  redraw();
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    playing = false; $("play").textContent = "Play";
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

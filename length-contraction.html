@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Length contraction — Sci 315 Modern Physics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#132C56;
+    --navy-2:#15385C;
+    --gold:#B8912F;
+    --flame:#E2701F;
+    --paper:#F4EADB;
+
+    --bg:#F7F0E3;
+    --surface:#FFFCF6;
+    --text:#132C56;
+    --muted:#5C6B84;
+    --rule:#DCCFB6;
+    --shadow:0 1px 0 rgba(19,44,86,.10);
+
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0D1B30;
+      --surface:#142644;
+      --text:#F4EADB;
+      --muted:#A9B8CE;
+      --rule:#27405F;
+      --shadow:none;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D1B30;
+    --surface:#142644;
+    --text:#F4EADB;
+    --muted:#A9B8CE;
+    --rule:#27405F;
+    --shadow:none;
+  }
+
+  *,*::before,*::after{box-sizing:inherit}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Source Serif 4",Cambria,Georgia,serif;
+    font-size:17px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 20px 64px}
+
+  header{
+    display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 28px;
+    padding-bottom:18px;border-bottom:2px solid var(--gold);margin-bottom:26px;
+  }
+  h1{
+    font-family:Montserrat,Calibri,system-ui,sans-serif;
+    font-weight:700;font-size:clamp(30px,5vw,44px);
+    letter-spacing:-.02em;line-height:1.05;margin:0 0 6px;
+  }
+  header p{margin:0;max-width:52ch;color:var(--muted);font-size:17px}
+  .course{
+    margin-left:auto;text-align:right;font-family:Montserrat,sans-serif;
+    font-size:13.5px;font-weight:600;line-height:1.45;color:var(--muted);
+  }
+  .course span{display:block;color:var(--gold)}
+
+  h2{
+    font-family:Montserrat,sans-serif;font-weight:600;
+    font-size:15px;letter-spacing:.01em;margin:0 0 4px;
+  }
+  .sub{margin:0 0 14px;color:var(--muted);font-size:15px;font-style:italic}
+
+  /* ---- the two frames ---- */
+  .bench{
+    background:var(--navy);
+    border-radius:14px;
+    padding:18px 18px 8px;
+    box-shadow:0 10px 30px rgba(19,44,86,.18);
+  }
+  .frame + .frame{margin-top:6px;border-top:1px solid rgba(244,234,219,.18);padding-top:14px}
+  .frame-head{
+    display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:2px;
+    color:var(--paper);
+  }
+  .frame-head h3{
+    font-family:Montserrat,sans-serif;font-weight:600;font-size:15px;margin:0;
+  }
+  .frame-head em{font-size:14.5px;color:#C8B79C;font-style:italic}
+  svg.stage{display:block;width:100%;height:auto}
+  .stage-note{
+    margin:0 0 10px;color:#9FB0C9;font-size:13px;font-family:Montserrat,sans-serif;
+  }
+
+  /* ---- controls ---- */
+  .controls{
+    margin-top:18px;background:var(--surface);border:1px solid var(--rule);
+    border-radius:12px;padding:18px 18px 16px;box-shadow:var(--shadow);
+  }
+  .ctl{margin-bottom:16px}
+  .ctl:last-of-type{margin-bottom:0}
+  .ctl label{
+    display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+    font-family:Montserrat,sans-serif;font-weight:600;font-size:14px;margin-bottom:6px;
+  }
+  .ctl label b{font-weight:700;color:var(--flame);font-variant-numeric:tabular-nums;font-size:16px}
+  input[type=range]{
+    width:100%;accent-color:var(--flame);height:26px;margin:0;cursor:pointer;
+  }
+  input[type=range]:focus-visible{outline:3px solid var(--gold);outline-offset:4px;border-radius:4px}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px}
+  button{
+    font-family:Montserrat,sans-serif;font-weight:600;font-size:14px;
+    padding:9px 16px;border-radius:999px;cursor:pointer;
+    border:1.5px solid var(--navy);background:var(--navy);color:var(--paper);
+  }
+  button.ghost{background:transparent;color:var(--text);border-color:var(--rule)}
+  button.ghost:hover{border-color:var(--gold)}
+  button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+  .presets{margin-left:auto;display:flex;flex-wrap:wrap;gap:8px}
+  .presets button{padding:7px 13px;font-size:13.5px;font-variant-numeric:tabular-nums}
+  .presets button[aria-pressed="true"]{background:var(--flame);border-color:var(--flame);color:#fff}
+
+  /* ---- readouts ---- */
+  .panels{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;margin-top:18px}
+  .card{
+    background:var(--surface);border:1px solid var(--rule);border-radius:12px;
+    padding:18px;box-shadow:var(--shadow);
+  }
+  dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:7px 18px;align-items:baseline}
+  dt{font-family:Montserrat,sans-serif;font-size:13.5px;font-weight:600;color:var(--muted)}
+  dd{margin:0;text-align:right;font-family:Montserrat,sans-serif;font-weight:600;
+     font-size:17px;font-variant-numeric:tabular-nums}
+  dd.hi{color:var(--flame)}
+  .math{
+    margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);
+    font-size:16.5px;line-height:1.9;
+  }
+  .math code{
+    font-family:Montserrat,sans-serif;font-weight:600;font-size:16px;
+    font-variant-numeric:tabular-nums;color:var(--text);
+  }
+  .math span{color:var(--muted);font-style:italic;font-size:15px}
+
+  .curve{display:block;width:100%;height:auto;margin-top:2px}
+
+  /* ---- notes ---- */
+  .notes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px}
+  .note{
+    background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--gold);
+    border-radius:10px;padding:16px 18px;box-shadow:var(--shadow);
+  }
+  .note.alert{border-left-color:var(--flame)}
+  .note.teach{border-left-color:var(--navy-2)}
+  .note h4{font-family:Montserrat,sans-serif;font-size:14px;font-weight:700;margin:0 0 6px}
+  .note p{margin:0;font-size:15.5px;line-height:1.6}
+  .note p + p{margin-top:9px}
+
+  footer{margin-top:28px;color:var(--muted);font-size:14px;font-style:italic}
+
+  @media (max-width:820px){
+    .panels,.notes{grid-template-columns:1fr}
+    .presets{margin-left:0;width:100%}
+    .wrap{padding:22px 16px 52px}
+    .course{margin-left:0;text-align:left}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none!important}
+  }
+</style>
+</head>
+<body>
+<nav style="max-width:1080px;margin:0 auto;padding:14px 20px 0;font-family:Montserrat,Calibri,system-ui,sans-serif;font-size:14px;font-weight:600;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
+<a href="index.html" style="color:var(--gold);text-decoration:none">&larr; Module home</a>
+<a href="index.html#lesson2" style="color:var(--muted);text-decoration:none">Back to the questions for this lesson</a>
+</nav>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>Length contraction</h1>
+      <p>One rocket, two rulers. Raise the speed and watch what each observer measures.</p>
+    </div>
+    <div class="course">Sci 315 Modern Physics<span>Unit I: Relativity</span></div>
+  </header>
+
+  <section class="bench" aria-label="Simulation">
+
+    <div class="frame">
+      <div class="frame-head">
+        <h3>Ground frame</h3>
+        <em>you are standing still, the rocket flies past</em>
+      </div>
+      <svg class="stage" id="labSvg" viewBox="0 0 1000 220" role="img"
+           aria-label="A rocket travelling left to right above a ground ruler marked in metres. A dashed outline shows its rest length.">
+        <g id="labTicks"></g>
+        <g id="labGhost"></g>
+        <g id="labShip"></g>
+        <g id="labAnno"></g>
+      </svg>
+      <p class="stage-note">Dashed gold outline: the rocket's rest length. Solid orange: the length you measure.</p>
+    </div>
+
+    <div class="frame">
+      <div class="frame-head">
+        <h3>Rocket frame</h3>
+        <em>the crew is at rest, the ground rushes past</em>
+      </div>
+      <svg class="stage" id="shipSvg" viewBox="0 0 1000 220" role="img"
+           aria-label="The same rocket at rest at its full length, while the ground markers stream past, crowded closer together.">
+        <g id="shipTicks"></g>
+        <g id="shipShip"></g>
+        <g id="shipAnno"></g>
+      </svg>
+      <p class="stage-note" id="shipNote">The crew's own metre stick never changes. The ground markers are the ones that crowd together.</p>
+    </div>
+
+  </section>
+
+  <section class="controls" aria-label="Controls">
+    <div class="ctl">
+      <label for="beta">Speed of the rocket <b id="betaOut">0.60c</b></label>
+      <input type="range" id="beta" min="0" max="0.99" step="0.002" value="0.6"
+             aria-describedby="betaOut">
+    </div>
+    <div class="ctl">
+      <label for="len">Rest length of the rocket <b id="lenOut">40 m</b></label>
+      <input type="range" id="len" min="10" max="80" step="5" value="40" aria-describedby="lenOut">
+    </div>
+    <div class="row">
+      <button id="play">Pause</button>
+      <button id="reset" class="ghost">Send it back</button>
+      <div class="presets" role="group" aria-label="Speed presets">
+        <button class="ghost" data-b="0.6">0.60c</button>
+        <button class="ghost" data-b="0.8">0.80c</button>
+        <button class="ghost" data-b="0.866">0.866c</button>
+        <button class="ghost" data-b="0.99">0.99c</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="panels">
+    <div class="card">
+      <h2>What each observer measures</h2>
+      <p class="sub">Algebra only — no calculus anywhere in this calculation.</p>
+      <dl>
+        <dt>Speed v</dt><dd id="vOut">1.80 × 10⁸ m/s</dd>
+        <dt>v as a fraction of c</dt><dd id="bOut">0.600</dd>
+        <dt>Lorentz factor γ</dt><dd id="gOut">1.250</dd>
+        <dt>Rest length L₀ (crew)</dt><dd id="l0Out">40.0 m</dd>
+        <dt>Measured length L (ground)</dt><dd class="hi" id="lOut">32.0 m</dd>
+        <dt>Shortened by</dt><dd id="pOut">20.0%</dd>
+      </dl>
+      <div class="math">
+        <code id="eq1">L = L₀ × √(1 − β²)</code><br>
+        <code id="eq2">L = 40.0 × √(1 − 0.600²) = 40.0 × 0.800 = 32.0 m</code><br>
+        <span id="eq3">Same answer the short way: L = L₀ ÷ γ = 40.0 ÷ 1.250 = 32.0 m</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>How L shrinks as speed climbs</h2>
+      <p class="sub">Nearly flat at everyday speeds, then it falls off a cliff.</p>
+      <svg class="curve" id="curve" viewBox="0 0 320 210" role="img"
+           aria-label="Graph of measured length divided by rest length against speed. It stays near 1 until about 0.6c, then plunges toward zero at c.">
+        <g id="curveG"></g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note">
+      <h4>Only along the direction of travel</h4>
+      <p>The rocket's height never changes, at any speed. Contraction happens along the line of motion and nowhere else — check the vertical marker as you push the slider.</p>
+    </div>
+    <div class="note alert">
+      <h4>Misconception alert</h4>
+      <p>Nothing squeezes the rocket. No force presses on the hull, no part is under stress, and the crew feels nothing unusual.</p>
+      <p>Length is not a property the rocket carries around. It is the result of a measurement, and the answer depends on who is measuring.</p>
+    </div>
+    <div class="note teach">
+      <h4>For your future classroom</h4>
+      <p>Ask the class: <em>which of the two is really shorter?</em> Let them argue, then show that both frames are equally valid — the crew measures the ground contracted by exactly the same factor.</p>
+      <p>The question has no frame-free answer. That is the lesson, not a loophole.</p>
+    </div>
+  </div>
+
+  <footer>The motion here is slowed far below scale so it can be seen. At 0.6c a real rocket would cross this stretch of ground in under a microsecond.</footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var C = 2.998e8;
+  var PX = 4;            // svg units per metre of ground
+  var GROUND_M = 250;    // metres of ground shown in the ground frame
+  var SPEED = 122;       // metres of ground per second at beta = 1 (slowed for viewing)
+  var Y = 168;           // ground line, svg units
+  var SHIP_Y = 92;       // ship centre line
+
+  var PAPER = "#F4EADB", GOLD = "#B8912F", FLAME = "#E2701F", DIM = "#7E90AC";
+
+  var beta = 0.6, L0 = 40, playing = true, d = -20, last = 0;
+
+  var $ = function(id){ return document.getElementById(id); };
+  var svgns = "http://www.w3.org/2000/svg";
+  function el(name, attrs){
+    var n = document.createElementNS(svgns, name);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    return n;
+  }
+  function clear(node){ while(node.firstChild) node.removeChild(node.firstChild); }
+  function gamma(){ return 1 / Math.sqrt(1 - beta*beta); }
+
+  /* ---------- rocket shape, drawn in unit x-space so scale(L,1) contracts it ---------- */
+  function rocket(fill, stroke, dash){
+    var g = el("g", {});
+    var finAttr = dash
+      ? {fill:"none", stroke:stroke, "stroke-width":1.5, "stroke-dasharray":"6 5",
+         "vector-effect":"non-scaling-stroke", opacity:.85}
+      : {fill:stroke, opacity:.75};
+    var f1 = {d:"M -0.50,-13 L -0.50,-30 L -0.33,-13 Z"}, f2 = {d:"M -0.50,13 L -0.50,30 L -0.33,13 Z"};
+    for (var k in finAttr){ f1[k] = finAttr[k]; f2[k] = finAttr[k]; }
+    g.appendChild(el("path", f1));
+    g.appendChild(el("path", f2));
+    var body = el("path", {
+      d:"M -0.50,-13 L 0.24,-13 C 0.39,-13 0.50,-6 0.50,0 C 0.50,6 0.39,13 0.24,13 L -0.50,13 Z",
+      fill:fill, stroke:stroke, "stroke-width": dash ? 2 : 2.5, "vector-effect":"non-scaling-stroke"
+    });
+    if (dash){ body.setAttribute("stroke-dasharray","7 6"); }
+    g.appendChild(body);
+    if (!dash){
+      [0.16, 0.01, -0.14].forEach(function(cx){
+        g.appendChild(el("ellipse", {cx:cx, cy:"0", rx:"0.038", ry:"5.5", fill:PAPER, opacity:.9}));
+      });
+    }
+    return g;
+  }
+
+  /* ---------- ground-frame ruler (fixed) ---------- */
+  function drawLabTicks(){
+    var g = $("labTicks"); clear(g);
+    g.appendChild(el("line", {x1:0, y1:Y, x2:1000, y2:Y, stroke:PAPER, "stroke-width":2, opacity:.55}));
+    for (var m = 0; m <= GROUND_M; m += 10){
+      var x = m * PX, major = (m % 50 === 0);
+      g.appendChild(el("line", {x1:x, y1:Y, x2:x, y2:Y + (major ? 16 : 8),
+        stroke:PAPER, "stroke-width": major ? 2 : 1, opacity: major ? .8 : .45}));
+      if (major){
+        var t = el("text", {x:x, y:Y + 34, fill:DIM, "font-size":"13",
+          "font-family":"Montserrat, sans-serif", "text-anchor":"middle"});
+        t.textContent = m + " m";
+        g.appendChild(t);
+      }
+    }
+  }
+
+  /* ---------- ground frame, per animation step ---------- */
+  var labShipG = null, labGhostG = null;
+  function drawLabStatic(){
+    clear($("labShip")); clear($("labGhost"));
+    labGhostG = rocket("none", GOLD, true);
+    labShipG  = rocket(FLAME, "#F4B860", false);
+    $("labGhost").appendChild(labGhostG);
+    $("labShip").appendChild(labShipG);
+  }
+  function updateLab(){
+    var g = gamma();
+    var cx = d * PX;
+    var Lpx = L0 * PX / g, L0px = L0 * PX;
+    labGhostG.setAttribute("transform", "translate(" + cx + "," + SHIP_Y + ") scale(" + L0px + ",1)");
+    labShipG.setAttribute("transform",  "translate(" + cx + "," + SHIP_Y + ") scale(" + Lpx  + ",1)");
+
+    var a = $("labAnno"); clear(a);
+    // vertical height marker, unchanged at every speed
+    a.appendChild(el("line", {x1:cx - L0px/2 - 26, y1:SHIP_Y - 30, x2:cx - L0px/2 - 26, y2:SHIP_Y + 30,
+      stroke:PAPER, "stroke-width":1.5, "stroke-dasharray":"4 4", opacity:.7}));
+    var h = el("text", {x:cx - L0px/2 - 33, y:SHIP_Y + 4, fill:DIM, "font-size":"12",
+      "font-family":"Montserrat, sans-serif", "text-anchor":"end"});
+    h.textContent = "height fixed";
+    a.appendChild(h);
+    // the two gaps between rest length and measured length
+    if (L0px - Lpx > 2){
+      [[-L0px/2, -Lpx/2], [Lpx/2, L0px/2]].forEach(function(p){
+        a.appendChild(el("rect", {x:cx + p[0], y:SHIP_Y - 13, width:(p[1]-p[0]), height:26,
+          fill:GOLD, opacity:.22}));
+      });
+      var lbl = el("text", {x:cx, y:SHIP_Y + 52, fill:GOLD, "font-size":"14",
+        "font-family":"Montserrat, sans-serif", "font-weight":"600", "text-anchor":"middle"});
+      lbl.textContent = "missing " + (L0 - L0/g).toFixed(1) + " m";
+      a.appendChild(lbl);
+    }
+    var meas = el("text", {x:cx, y:SHIP_Y - 44, fill:FLAME, "font-size":"15",
+      "font-family":"Montserrat, sans-serif", "font-weight":"700", "text-anchor":"middle"});
+    meas.textContent = "you measure " + (L0/g).toFixed(1) + " m";
+    a.appendChild(meas);
+  }
+
+  /* ---------- rocket frame ---------- */
+  var shipShipG = null;
+  function drawShipStatic(){
+    clear($("shipShip"));
+    shipShipG = rocket(FLAME, "#F4B860", false);
+    $("shipShip").appendChild(shipShipG);
+    shipShipG.setAttribute("transform", "translate(500," + SHIP_Y + ") scale(" + (L0*PX) + ",1)");
+  }
+  // ticks and labels depend only on speed, so build them on change and slide the group each frame
+  function buildShip(){
+    var g = gamma();
+    var step = 10 * PX / g;              // ground markers, crowded by 1/gamma
+    var showLabels = (step * 5 > 46);
+    var reach = 40 + 130 * g;            // metres of ground kept either side of the view
+    var tk = $("shipTicks"); clear(tk);
+    for (var m = -Math.ceil(reach / 10) * 10; m <= GROUND_M + reach; m += 10){
+      var x = 500 + m * PX / g;
+      var major = (m % 50 === 0);
+      tk.appendChild(el("line", {x1:x, y1:Y, x2:x, y2:Y + (major ? 16 : 8),
+        stroke:PAPER, "stroke-width": major ? 2 : 1, opacity: major ? .8 : .4}));
+      if (major && showLabels && m >= 0 && m <= GROUND_M){
+        var t = el("text", {x:x, y:Y + 34, fill:DIM, "font-size":"13",
+          "font-family":"Montserrat, sans-serif", "text-anchor":"middle"});
+        t.textContent = m + " m";
+        tk.appendChild(t);
+      }
+    }
+
+    shipShipG.setAttribute("transform", "translate(500," + SHIP_Y + ") scale(" + (L0*PX) + ",1)");
+
+    var a = $("shipAnno"); clear(a);
+    a.appendChild(el("line", {x1:0, y1:Y, x2:1000, y2:Y, stroke:PAPER, "stroke-width":2, opacity:.55}));
+    var rest = el("text", {x:500, y:SHIP_Y - 44, fill:"#8FD6C4", "font-size":"15",
+      "font-family":"Montserrat, sans-serif", "font-weight":"700", "text-anchor":"middle"});
+    rest.textContent = "crew measures " + L0.toFixed(1) + " m";
+    a.appendChild(rest);
+
+    var arrow = el("text", {x:990, y:Y - 10, fill:DIM, "font-size":"13",
+      "font-family":"Montserrat, sans-serif", "text-anchor":"end"});
+    arrow.textContent = "ground moves this way \u2190";
+    a.appendChild(arrow);
+
+    var gap = el("text", {x:500, y:SHIP_Y + 52, fill:GOLD, "font-size":"14",
+      "font-family":"Montserrat, sans-serif", "font-weight":"600", "text-anchor":"middle"});
+    gap.textContent = "each 10 m of ground now measures " + (10/g).toFixed(2) + " m";
+    a.appendChild(gap);
+  }
+
+  function updateShip(){
+    $("shipTicks").setAttribute("transform", "translate(" + (-d * PX / gamma()).toFixed(2) + ",0)");
+  }
+
+  /* ---------- the L/L0 curve ---------- */
+  function drawCurve(){
+    var g = $("curveG"); clear(g);
+    var x0 = 44, x1 = 300, y0 = 22, y1 = 160;
+    var X = function(b){ return x0 + b * (x1 - x0); };
+    var Yv = function(r){ return y1 - r * (y1 - y0); };
+
+    [0, 0.5, 1].forEach(function(r){
+      g.appendChild(el("line", {x1:x0, y1:Yv(r), x2:x1, y2:Yv(r),
+        stroke:"currentColor", opacity:.16, "stroke-width":1}));
+      var t = el("text", {x:x0 - 9, y:Yv(r) + 4, fill:"currentColor", opacity:.6,
+        "font-size":"11.5", "font-family":"Montserrat, sans-serif", "text-anchor":"end"});
+      t.textContent = r.toFixed(1);
+      g.appendChild(t);
+    });
+    [0, 0.5, 1].forEach(function(b){
+      var t = el("text", {x:X(b), y:y1 + 20, fill:"currentColor", opacity:.6,
+        "font-size":"11.5", "font-family":"Montserrat, sans-serif", "text-anchor":"middle"});
+      t.textContent = b === 1 ? "c" : (b + "c");
+      g.appendChild(t);
+    });
+
+    var pts = [];
+    for (var i = 0; i <= 200; i++){
+      var b = i / 200 * 0.999;
+      pts.push((i ? "L" : "M") + X(b).toFixed(2) + "," + Yv(Math.sqrt(1 - b*b)).toFixed(2));
+    }
+    g.appendChild(el("path", {d:pts.join(" "), fill:"none", stroke:"#B8912F", "stroke-width":2.5}));
+
+    var r = Math.sqrt(1 - beta*beta);
+    g.appendChild(el("line", {x1:X(beta), y1:Yv(r), x2:X(beta), y2:y1,
+      stroke:"#E2701F", "stroke-width":1.5, "stroke-dasharray":"4 4", opacity:.8}));
+    g.appendChild(el("circle", {cx:X(beta), cy:Yv(r), r:6, fill:"#E2701F"}));
+
+    var v = el("text", {x:X(beta) > 200 ? X(beta) - 12 : X(beta) + 12, y:Yv(r) - 12,
+      fill:"#E2701F", "font-size":"13.5", "font-family":"Montserrat, sans-serif",
+      "font-weight":"700", "text-anchor": X(beta) > 200 ? "end" : "start"});
+    v.textContent = r.toFixed(3);
+    g.appendChild(v);
+
+    var ax = el("text", {x:8, y:14, fill:"currentColor", opacity:.65, "font-size":"12",
+      "font-family":"Montserrat, sans-serif"});
+    ax.textContent = "L \u00F7 L\u2080";
+    g.appendChild(ax);
+  }
+
+  /* ---------- numbers ---------- */
+  function sci(n){
+    var e = Math.floor(Math.log10(Math.abs(n)));
+    var m = n / Math.pow(10, e);
+    var sup = String(e).replace(/8/g,"\u2078").replace(/7/g,"\u2077").replace(/6/g,"\u2076")
+                       .replace(/5/g,"\u2075").replace(/0/g,"\u2070").replace(/1/g,"\u00B9");
+    return m.toFixed(2) + " \u00D7 10" + sup + " m/s";
+  }
+  function updateNumbers(){
+    var g = gamma(), root = Math.sqrt(1 - beta*beta), L = L0 * root;
+    $("betaOut").textContent = beta.toFixed(3).replace(/0$/,"") + "c";
+    $("lenOut").textContent  = L0 + " m";
+    $("vOut").textContent    = beta === 0 ? "0 m/s" : sci(beta * C);
+    $("bOut").textContent    = beta.toFixed(3);
+    $("gOut").textContent    = g.toFixed(3);
+    $("l0Out").textContent   = L0.toFixed(1) + " m";
+    $("lOut").textContent    = L.toFixed(1) + " m";
+    $("pOut").textContent    = ((1 - root) * 100).toFixed(1) + "%";
+    $("eq2").textContent = "L = " + L0.toFixed(1) + " \u00D7 \u221A(1 \u2212 " + beta.toFixed(3) +
+      "\u00B2) = " + L0.toFixed(1) + " \u00D7 " + root.toFixed(3) + " = " + L.toFixed(1) + " m";
+    $("eq3").textContent = "Same answer the short way: L = L\u2080 \u00F7 \u03B3 = " + L0.toFixed(1) +
+      " \u00F7 " + g.toFixed(3) + " = " + L.toFixed(1) + " m";
+    document.querySelectorAll(".presets button").forEach(function(b){
+      b.setAttribute("aria-pressed", Math.abs(parseFloat(b.dataset.b) - beta) < 0.002 ? "true" : "false");
+    });
+  }
+
+  function startX(){ return -(L0/2) - 15; }
+
+  function redraw(){
+    buildShip(); updateLab(); updateShip(); drawCurve(); updateNumbers();
+  }
+
+  /* ---------- loop ---------- */
+  function tick(now){
+    if (!last) last = now;
+    var dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+    if (playing){
+      d += beta * SPEED * dt;
+      if (d > GROUND_M + L0/2 + 15) d = startX();
+      updateLab(); updateShip();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* ---------- wiring ---------- */
+  $("beta").addEventListener("input", function(e){ beta = parseFloat(e.target.value); redraw(); });
+  $("len").addEventListener("input", function(e){
+    L0 = parseFloat(e.target.value); drawShipStatic(); redraw();
+  });
+  $("play").addEventListener("click", function(){
+    playing = !playing;
+    this.textContent = playing ? "Pause" : "Play";
+  });
+  $("reset").addEventListener("click", function(){ d = startX(); updateLab(); updateShip(); });
+  document.querySelectorAll(".presets button").forEach(function(b){
+    b.addEventListener("click", function(){
+      beta = parseFloat(this.dataset.b);
+      $("beta").value = beta;
+      redraw();
+    });
+  });
+
+  d = -35;
+  drawLabTicks(); drawLabStatic(); drawShipStatic(); redraw();
+
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    playing = false; $("play").textContent = "Play";
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
